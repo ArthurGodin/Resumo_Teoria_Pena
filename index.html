@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Jornada do Jurista: Teoria da Pena</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8F7F4; }
+        h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
+        .stage-card { transition: all 0.3s ease-in-out; }
+        .stage-locked { filter: grayscale(1) blur(2px); pointer-events: none; opacity: 0.6; }
+        .card-flip-container { perspective: 1000px; }
+        .card-flipper { position: relative; transform-style: preserve-3d; transition: transform 0.6s; }
+        .card-flip-container.flipped .card-flipper { transform: rotateY(180deg); }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; top:0; left:0; }
+        .card-back { transform: rotateY(180deg); }
+        .progress-bar-fill { transition: width 0.5s ease-in-out; }
+        .draggable { cursor: grab; }
+        .drop-zone { transition: background-color 0.2s; }
+        .drop-zone-hover { background-color: #FEF3C7; border-style: dashed; }
+        .case-nav-active { background-color: #1a202c; color: white; }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div id="app-container" class="max-w-7xl mx-auto p-4 md:p-8">
+        
+        <header class="text-center py-10 border-b-2 border-amber-900/10 mb-10">
+            <h1 class="text-4xl md:text-6xl font-bold text-gray-900">A Jornada do Jurista mais gata do mundo, Ana Maria</h1>
+            <p class="text-lg text-gray-600 mt-4">Uma imersão interativa na Teoria da Pena pra ajudar minha princesa a fazer a prova dela hehe</p>
+        </header>
+        
+        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-12">
+            <div id="progress-bar" class="bg-amber-800 h-2.5 rounded-full progress-bar-fill" style="width: 10%"></div>
+        </div>
+
+        <div id="stages-grid" class="space-y-16">
+
+            <section id="stage-1" class="stage-card">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl md:text-4xl font-bold">Capítulo 1: As Fundações</h2>
+                    <p class="mt-2 text-gray-600">Para que serve punir? Desvende as grandes teorias que moldam o Direito Penal.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="card-flip-container h-64" data-theory="absoluta">
+                        <div class="card-flipper w-full h-full">
+                            <div class="card-front bg-white p-6 rounded-lg shadow-lg flex flex-col justify-center items-center text-center cursor-pointer border-2 border-gray-200">
+                                <h3 class="font-serif text-2xl">A Pena como Castigo</h3>
+                                <p class="mt-2 text-sm text-gray-500">Clique para revelar a teoria.</p>
+                            </div>
+                            <div class="card-back bg-gray-800 text-white p-6 rounded-lg shadow-lg flex flex-col justify-center text-center">
+                                <h3 class="font-serif text-xl">Teoria Absoluta</h3>
+                                <p class="mt-2 text-sm">Foco no passado. A pena é a retribuição justa pelo mal cometido.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="card-flip-container h-64" data-theory="relativa">
+                        <div class="card-flipper w-full h-full">
+                            <div class="card-front bg-white p-6 rounded-lg shadow-lg flex flex-col justify-center items-center text-center cursor-pointer border-2 border-gray-200">
+                                <h3 class="font-serif text-2xl">A Pena como Prevenção</h3>
+                                <p class="mt-2 text-sm text-gray-500">Clique para revelar a teoria.</p>
+                            </div>
+                            <div class="card-back bg-gray-800 text-white p-6 rounded-lg shadow-lg flex flex-col justify-center text-center">
+                                <h3 class="font-serif text-xl">Teoria Relativa</h3>
+                                <p class="mt-2 text-sm">Foco no futuro. A pena visa evitar que novos crimes aconteçam.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="card-flip-container h-64" data-theory="mista">
+                        <div class="card-flipper w-full h-full">
+                            <div class="card-front bg-white p-6 rounded-lg shadow-lg flex flex-col justify-center items-center text-center cursor-pointer border-2 border-amber-800">
+                                <h3 class="font-serif text-2xl">A Pena no Brasil</h3>
+                                <p class="mt-2 text-sm text-gray-500">Clique para revelar a teoria.</p>
+                            </div>
+                            <div class="card-back bg-amber-800 text-white p-6 rounded-lg shadow-lg flex flex-col justify-center text-center">
+                                <h3 class="font-serif text-xl">Teoria Mista</h3>
+                                <p class="mt-2 text-sm">A união das duas: a pena deve punir (reprovar) e prevenir. É a nossa regra!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-8">
+                    <button id="unlock-stage-2" class="bg-gray-300 text-gray-500 font-bold py-2 px-6 rounded-lg cursor-not-allowed" disabled>Avançar</button>
+                </div>
+            </section>
+            
+            <section id="stage-2" class="stage-card stage-locked">
+                 <div class="text-center mb-8">
+                    <h2 class="text-3xl md:text-4xl font-bold">Capítulo 2: A Mesa do Juiz</h2>
+                    <p class="mt-2 text-gray-600">Simule o cálculo da pena. Arraste os fatores para a balança e formule sua sentença.</p>
+                </div>
+                <div class="grid md:grid-cols-5 gap-8 bg-white p-8 rounded-xl shadow-lg">
+                    <div class="md:col-span-2">
+                        <h3 class="font-serif text-xl mb-4 border-b pb-2">Fatores do Caso</h3>
+                        <div id="draggable-container" class="space-y-3">
+                            <div class="draggable bg-green-100 text-green-800 p-3 rounded-lg text-sm font-medium" data-type="atenuante" draggable="true">Atenuante: Confissão</div>
+                            <div class="draggable bg-red-100 text-red-800 p-3 rounded-lg text-sm font-medium" data-type="agravante" draggable="true">Agravante: Reincidência</div>
+                            <div class="draggable bg-red-100 text-red-800 p-3 rounded-lg text-sm font-medium" data-type="aumento" draggable="true">Causa de Aumento (1/3)</div>
+                             <div class="draggable bg-green-100 text-green-800 p-3 rounded-lg text-sm font-medium" data-type="diminuicao" draggable="true">Causa de Diminuição (1/3)</div>
+                        </div>
+                    </div>
+                    <div id="drop-zone" class="drop-zone md:col-span-3 bg-gray-50 border-2 border-gray-300 rounded-lg p-6 flex flex-col">
+                        <h3 class="font-serif text-xl text-center mb-4">Folha de Sentença</h3>
+                        <div class="flex-grow space-y-4">
+                            <p class="text-sm"><strong>Crime Base:</strong> Furto (Pena inicial: 2 anos)</p>
+                            <div id="sentenca-list" class="space-y-2 min-h-[100px]"></div>
+                        </div>
+                        <div class="border-t-2 border-dashed mt-6 pt-4 text-center">
+                            <p class="text-gray-600">PENA FINAL</p>
+                            <p id="pena-final-simulador" class="text-4xl font-bold text-amber-900">2.00 anos</p>
+                             <p id="sumula-aviso-sim" class="text-xs text-red-600 mt-1 hidden">Atenuante não pode reduzir abaixo do mínimo!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-8">
+                    <button id="unlock-stage-3" class="bg-amber-800 hover:bg-amber-900 text-white font-bold py-2 px-6 rounded-lg transition-colors">Avançar</p>
+                </div>
+            </section>
+            
+            <section id="stage-3" class="stage-card stage-locked">
+                 <div class="text-center mb-8">
+                    <h2 class="text-3xl md:text-4xl font-bold">Capítulo 3: Análise de Casos</h2>
+                    <p class="mt-2 text-gray-600">Aplique seu conhecimento. Analise o caso e selecione a classificação jurídica correta.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col md:flex-row gap-8">
+                    <div class="md:w-1/3">
+                        <h3 class="font-serif text-xl mb-4">Arquivo do Caso</h3>
+                        <p id="case-text" class="text-sm bg-gray-50 p-4 rounded-lg border">Um agente, com uma única ação (ameaça com arma), rouba o celular de 5 passageiros dentro de um ônibus.</p>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h3 class="font-serif text-xl mb-4">Sua Análise</h3>
+                        <div id="case-options" class="space-y-3">
+                            <button data-case-answer="formal" class="w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-amber-800 hover:bg-amber-50 transition-colors">Concurso Formal</button>
+                            <button data-case-answer="continuado" class="w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-amber-800 hover:bg-amber-50 transition-colors">Crime Continuado</button>
+                            <button data-case-answer="material" class="w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-amber-800 hover:bg-amber-50 transition-colors">Concurso Material</button>
+                        </div>
+                        <div id="case-feedback" class="mt-4 p-3 rounded-lg text-sm font-medium hidden"></div>
+                         <div class="text-right mt-4">
+                            <button id="unlock-stage-4" class="bg-gray-300 text-gray-500 font-bold py-2 px-6 rounded-lg cursor-not-allowed" disabled>Avançar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="stage-4" class="stage-card stage-locked">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl md:text-4xl font-bold">Capítulo Final: O Veredito</h2>
+                    <p class="mt-2 text-gray-600">Você chegou à decisão final. Analise os três casos e decida se o réu merece o benefício do *Sursis*.</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <div class="flex justify-center border-b mb-6">
+                        <button class="case-nav-btn px-6 py-2 font-medium border-b-2 border-gray-900 text-gray-900" data-case="1">Caso 1</button>
+                        <button class="case-nav-btn px-6 py-2 font-medium border-b-2 border-transparent text-gray-500" data-case="2">Caso 2</button>
+                        <button class="case-nav-btn px-6 py-2 font-medium border-b-2 border-transparent text-gray-500" data-case="3">Caso 3</button>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div id="sursis-case-summary">
+                        </div>
+                        <div id="sursis-decision-panel" class="bg-gray-800 text-white p-8 rounded-xl shadow-lg text-center flex flex-col justify-center">
+                        </div>
+                    </div>
+                     <div id="sursis-feedback" class="mt-4 p-3 rounded-lg text-sm font-medium hidden"></div>
+                </div>
+            </section>
+
+            <div id="final-screen" class="hidden text-center py-20">
+                <h2 class="text-4xl md:text-5xl font-bold text-amber-900">Parabéns, Jurista!</h2>
+                <p class="mt-4 text-lg text-gray-700">Você completou sua jornada e conseguiu domínio sobre a Teoria da Pena.</p>
+                <p class="mt-2 text-gray-500">A justiça está em boas mãos. Boa sorte na sua prova minha gatinha tô torcendo por ti, te amo S2 S2 S2!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const progressBar = document.getElementById('progress-bar');
+        const stages = [
+            { id: 'stage-1', unlockBtn: 'unlock-stage-2', nextStageId: 'stage-2', progress: 10 },
+            { id: 'stage-2', unlockBtn: 'unlock-stage-3', nextStageId: 'stage-3', progress: 40 },
+            { id: 'stage-3', unlockBtn: 'unlock-stage-4', nextStageId: 'stage-4', progress: 70 },
+            { id: 'stage-4', progress: 100 }
+        ];
+        let revealedTheories = new Set();
+        
+        function updateProgress(percent) { progressBar.style.width = `${percent}%`; }
+        function unlockStage(stageId) {
+            const stageElement = document.getElementById(stageId);
+            if (stageElement) stageElement.classList.remove('stage-locked');
+        }
+
+        const unlockStage2Btn = document.getElementById('unlock-stage-2');
+        document.querySelectorAll('.card-flip-container').forEach(container => {
+            container.addEventListener('click', () => {
+                container.classList.add('flipped');
+                revealedTheories.add(container.dataset.theory);
+                if (revealedTheories.size === 3) {
+                    unlockStage2Btn.disabled = false;
+                    unlockStage2Btn.classList.replace('bg-gray-300', 'bg-amber-800');
+                    unlockStage2Btn.classList.replace('text-gray-500', 'text-white');
+                    unlockStage2Btn.classList.replace('cursor-not-allowed', 'hover:bg-amber-900');
+                }
+            });
+        });
+
+        unlockStage2Btn.addEventListener('click', () => {
+            unlockStage('stage-2');
+            updateProgress(stages[1].progress);
+            document.getElementById('stage-2').scrollIntoView();
+        });
+
+        // Stage 2: Dosimetria with REMOVE functionality
+        const draggables = document.querySelectorAll('.draggable');
+        const dropZone = document.getElementById('drop-zone');
+        const sentencaList = document.getElementById('sentenca-list');
+        const penaFinalSimulador = document.getElementById('pena-final-simulador');
+        const sumulaAvisoSim = document.getElementById('sumula-aviso-sim');
+        let droppedItems = new Set();
+        const penaBase = 2.0;
+
+        function calcularPenaSimulador() {
+            let pena = penaBase;
+            let temAtenuante = droppedItems.has('atenuante');
+            let temAgravante = droppedItems.has('agravante');
+            
+            let penaProvisoria = penaBase + (temAgravante ? 0.5 : 0);
+            
+            sumulaAvisoSim.classList.add('hidden');
+            if (temAtenuante) {
+                if ((penaProvisoria - 0.5) < penaBase) {
+                    penaProvisoria = penaBase;
+                    sumulaAvisoSim.classList.remove('hidden');
+                } else {
+                    penaProvisoria -= 0.5;
+                }
+            }
+
+            let penaFinal = penaProvisoria;
+            if (droppedItems.has('aumento')) penaFinal *= 1.333;
+            if (droppedItems.has('diminuicao')) penaFinal *= 0.667;
+
+            penaFinalSimulador.textContent = `${penaFinal.toFixed(2)} anos`.replace('.', ',');
+        }
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', draggable.dataset.type);
+                setTimeout(() => { draggable.classList.add('opacity-50'); }, 0);
+            });
+            draggable.addEventListener('dragend', () => draggable.classList.remove('opacity-50'));
+        });
+
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drop-zone-hover'); });
+        dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('drop-zone-hover'); });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drop-zone-hover');
+            const type = e.dataTransfer.getData('text/plain');
+            if (!droppedItems.has(type)) {
+                droppedItems.add(type);
+                const itemEl = document.createElement('div');
+                itemEl.className = 'flex justify-between items-center p-2 bg-white rounded shadow-sm text-sm';
+                itemEl.dataset.type = type;
+                itemEl.innerHTML = `<span>Fator: ${type.charAt(0).toUpperCase() + type.slice(1)}</span><button class="remove-factor text-red-500 font-bold">✖</button>`;
+                sentencaList.appendChild(itemEl);
+                
+                itemEl.querySelector('.remove-factor').addEventListener('click', () => {
+                    droppedItems.delete(type);
+                    itemEl.remove();
+                    calcularPenaSimulador();
+                });
+                
+                calcularPenaSimulador();
+            }
+        });
+
+        document.getElementById('unlock-stage-3').addEventListener('click', () => {
+            unlockStage('stage-3');
+            updateProgress(stages[2].progress);
+            document.getElementById('stage-3').scrollIntoView();
+        });
+        
+        // Stage 3: Concurso de Crimes
+        const unlockStage4Btn = document.getElementById('unlock-stage-4');
+        document.querySelectorAll('[data-case-answer]').forEach(option => {
+            option.addEventListener('click', () => {
+                const answer = option.dataset.caseAnswer;
+                const caseFeedback = document.getElementById('case-feedback');
+                caseFeedback.classList.remove('hidden');
+                if (answer === 'formal') {
+                    caseFeedback.textContent = 'Correto! Uma única ação com múltiplos resultados caracteriza Concurso Formal.';
+                    caseFeedback.className = 'mt-4 p-3 rounded-lg text-sm font-medium bg-green-100 text-green-800';
+                    unlockStage4Btn.disabled = false;
+                    unlockStage4Btn.classList.replace('bg-gray-300', 'bg-amber-800');
+                    unlockStage4Btn.classList.replace('text-gray-500', 'text-white');
+                    unlockStage4Btn.classList.replace('cursor-not-allowed', 'hover:bg-amber-900');
+                } else {
+                    caseFeedback.textContent = 'Incorreto. Tente novamente! Lembre-se: uma ação, vários crimes.';
+                    caseFeedback.className = 'mt-4 p-3 rounded-lg text-sm font-medium bg-red-100 text-red-800';
+                }
+            });
+        });
+        
+        unlockStage4Btn.addEventListener('click', () => {
+            unlockStage('stage-4');
+            updateProgress(stages[3].progress);
+            document.getElementById('stage-4').scrollIntoView();
+        });
+
+        // Stage 4: Sursis with multiple cases
+        const sursisCases = {
+            '1': { summary: `<strong>Réu:</strong> Primário<br><strong>Pena Final:</strong> 1 ano e 6 meses<br><strong>Circunstâncias:</strong> Favoráveis<br><strong>PRD:</strong> Incabível no caso.`, correct: 'conceder' },
+            '2': { summary: `<strong>Réu:</strong> Reincidente em crime doloso<br><strong>Pena Final:</strong> 1 ano<br><strong>Circunstâncias:</strong> Favoráveis<br><strong>PRD:</strong> Incabível no caso.`, correct: 'negar' },
+            '3': { summary: `<strong>Réu:</strong> Primário<br><strong>Pena Final:</strong> 3 anos<br><strong>Circunstâncias:</strong> Favoráveis<br><strong>PRD:</strong> Incabível no caso.`, correct: 'negar' }
+        };
+        const caseNavBtns = document.querySelectorAll('.case-nav-btn');
+        const summaryDiv = document.getElementById('sursis-case-summary');
+        const decisionDiv = document.getElementById('sursis-decision-panel');
+        const feedbackDiv = document.getElementById('sursis-feedback');
+        let correctSursisDecisions = new Set();
+        let currentCase = '1';
+
+        function displaySursisCase(caseNum) {
+            currentCase = caseNum;
+            const caseData = sursisCases[caseNum];
+            summaryDiv.innerHTML = `<h3 class="font-serif text-xl mb-4">Resumo da Sentença (Caso ${caseNum})</h3><div class="space-y-3 text-sm">${caseData.summary}</div>`;
+            decisionDiv.innerHTML = `<h3 class="font-serif text-2xl mb-6">Sua Decisão</h3><div class="flex gap-4 justify-center"><button id="conceder-sursis" class="bg-green-600 hover:bg-green-700 font-bold py-3 px-6 rounded-lg transition-colors">Conceder Sursis</button><button id="negar-sursis" class="bg-red-600 hover:bg-red-700 font-bold py-3 px-6 rounded-lg transition-colors">Negar Sursis</button></div>`;
+            feedbackDiv.classList.add('hidden');
+            
+            caseNavBtns.forEach(btn => {
+                btn.classList.remove('border-gray-900', 'text-gray-900');
+                btn.classList.add('border-transparent', 'text-gray-500');
+                if (btn.dataset.case === caseNum) {
+                    btn.classList.add('border-gray-900', 'text-gray-900');
+                    btn.classList.remove('border-transparent', 'text-gray-500');
+                }
+            });
+
+            document.getElementById('conceder-sursis').addEventListener('click', () => handleSursisDecision('conceder'));
+            document.getElementById('negar-sursis').addEventListener('click', () => handleSursisDecision('negar'));
+        }
+
+        function handleSursisDecision(decision) {
+            const isCorrect = sursisCases[currentCase].correct === decision;
+            feedbackDiv.classList.remove('hidden');
+            if (isCorrect) {
+                feedbackDiv.textContent = 'Decisão Correta!';
+                feedbackDiv.className = 'mt-4 p-3 rounded-lg text-sm font-medium bg-green-100 text-green-800';
+                correctSursisDecisions.add(currentCase);
+                if(correctSursisDecisions.size === 3) {
+                     updateProgress(100);
+                     document.getElementById('stage-4').classList.add('opacity-50');
+                     document.getElementById('final-screen').classList.remove('hidden');
+                     document.getElementById('final-screen').scrollIntoView();
+                }
+            } else {
+                let reason = currentCase === '2' ? 'O réu é reincidente em crime doloso.' : 'A pena é superior a 2 anos.';
+                feedbackDiv.textContent = `Incorreto. Reveja os requisitos! ${reason}`;
+                feedbackDiv.className = 'mt-4 p-3 rounded-lg text-sm font-medium bg-red-100 text-red-800';
+            }
+        }
+        
+        caseNavBtns.forEach(btn => btn.addEventListener('click', () => displaySursisCase(btn.dataset.case)));
+        
+        displaySursisCase('1');
+
+    });
+    </script>
+</body>
+</html>
